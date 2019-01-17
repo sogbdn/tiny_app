@@ -1,0 +1,32 @@
+<% /* template files: receiving the data it needs to display */%>
+
+<% include ./partials/_header.ejs  %>
+
+
+<body>
+    <!-- Add your EJS code here -->
+
+
+    
+    <ul>
+        <% for (var urlKey in urls) { %>
+
+            <li>
+              <%= urlKey  %>
+
+              <%= urls[urlKey] %>
+              <form method="POST" action="/urls/<%= urlKey %>/delete">
+                    <a href='/urls/<%= urlKey  %>'> Edit </a>
+                    <button type="submit"> Delete me!</button>
+               </form>
+
+            </li>
+        <% };%>
+    </ul>
+
+    <a href= '/urls/new'> Create new url </a>
+
+</body>
+
+</html>
+

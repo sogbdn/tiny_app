@@ -1,0 +1,14 @@
+<% include ./partials/_header.ejs  %>
+    <!-- Add your EJS code here -->
+
+<ul>
+        <li>
+              <%= longURL  %>
+              <%= shortURL %>
+<form method="POST" action="/urls/<%= shortURL %>/update">
+<!--- Create a new field in order to put new longurl to update ---->
+<input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px"></input>
+<button type="submit"> Update me!</button>
+</form>
+        </li>
+</ul>
