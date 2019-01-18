@@ -6,3 +6,38 @@
   <title>TinyApp</title>
 </head>
 
+<!-----If the user object is not undefined (exists) display Welcome email and log
+<! ----If user is undefined, display the login and register link---->
+
+<h1>TinyApp</h1>
+
+<% If (user { %>
+  <div>Welcome <%= user.email %> </div>
+  <div>
+    <form method="POST"    action="/logout"
+    
+    ></form>
+
+
+  </div>
+
+})
+
+<% if(username){ %>
+<h1><%= username %></h1>
+<!--- Create a logout form to POST to logout ---->
+<form method="POST" action="/logout">
+ <input type="submit" value="logout">
+</form>
+
+<% } else{ %>
+<!--- Create a new field in order to put username: login form ---->
+<h1>
+  <form method="POST" action="/login">
+    <input id=templateVars type="text" name="username" placeholder="Username" style="width: 300px"></input>
+      <button type="submit"> Submit </button>
+  </form>
+</h1>
+<% } %>
+  
+
