@@ -6,30 +6,27 @@
   <title>TinyApp</title>
 </head>
 
-<header>
-
-
+<body>
+ <header>
 
 <h1> TinyApp </h1>
 
-<!-----If the user object exists display Welcome email and logout button--->
+<!-- If the user object exists display Welcome email and logout button--->
 <% if (user) { %>
 <div> Welcome <%= user.email %> </div>
 <div>
   <form method="POST" action="/logout">
-    <input type="submit" value="Logout" >
+    <input type="submit" value="Logout">
   </form>
 </div>
-<!----If user is undefined, display the login and register link---->
+<!-- If user is undefined, display the login and register link---->
 <% } else { %>
-  <div class="session-links">
-    <div class="login">
-      <a href="/login"> Login </a>
-    </div>
-  
-    <div>
-     <a href="/register"> Register </a>
-    </div>
+  <div class="login"><a href="/login"> Login </a>
+  </div>
+  <div class="register"><a href="/register"> Register </a>
+  </div>
 <% } %>
- 
-</header>
+
+  </header>
+</body>
+

@@ -3,23 +3,15 @@
       in the body of this request, input = "longURL" with URL-encoded
       ex: longURL =http2d54f5ssc ----------------------------------->
 
-<!DOCTYPE html>
-<html lang="en">
 
-<head></head>
+  <% include partials/_header %>
 
-  <body style="font-size:20px; padding:50px;">
-
-    <% if (false) {%> 
-    <!-- <% include partials/_header %>
-
+  <body>
     <form action="/urls" method="POST" style="margin:150px;">
       <label for="longURL"> Enter a URL: </label>
         <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
          </input type="submit" value="Submit">
-    </form> -->
-    <% } %>
-
+    </form> 
   </body>
 
 </html>
