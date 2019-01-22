@@ -3,7 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 
-// express setup
+//______________ express setup
 const PORT = 8080; //___________ default port 8080
 const app = express(); //_________My App is running with Express
 
@@ -14,8 +14,7 @@ app.use(cookieParser());
 //___________ Tells Express app to use EJS as its templating engine
 app.set("view engine", "ejs");
 
-//_____________________DATABASE_____________________________________//
-//____________DATABASE OBJECT  _____________________________//
+//__________________URL DATABASE_______________________________//
 const urlDatabase = {
   b2xVn2: {
     shortUrl: "b2xVn2",
@@ -100,14 +99,24 @@ function urlsForUsers(id) {
   return filteredUrls;
 }
 
-function addNewURL(shortURL, longURL, userId) {
-
+function addNewURL(shortUrl, longUrl, userId) {
+  urlDatabase[shortUrl] = {
+    shortUrl: shortUrl,
+    longUrl: longUrl,
+    userId: userId
+  };
+  console.log(urlDatabase);
 }
 
 // app.get to add a new route handler on the root path
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
+
+app.get("/urls.json", (req, res) => {
+  res.json(urlDatabase);
+});
+
 // sending HTML
 app.get("/hello", (req, res) => {
   res.send("<html><body> Hello <b> World </b></body></html>\n");
@@ -119,10 +128,13 @@ app.get("/hello", (req, res) => {
 
 app.get("/urls", (req, res) => {
   const userId = req.cookies["user_id"];
+  console.log(userId);
+
   const templateVars = {
     urls: urlsForUsers(userId),
     user: users[req.cookies.user_id]
   };
+  console.log(templateVars);
     //passing user_id to each template so that it knows if the user logged in 
   res.render("urls_index", templateVars);
 });
@@ -174,17 +186,18 @@ app.post('/register', (req, res) => {
 
 // Endpoint Edit URL form
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { longURL: urlDatabase[req.params.id], shortURL: req.params.id, user: users.user};
+  let templateVars = { longUrl: urlDatabase[req.params.id], shortUrl: req.params.id, user: users.user};
   res.render("urls_show", templateVars);
 });
 
 // logs the request body and gives a response parsed into a JS object
-//
 app.post("/urls", (req, res) => {
-  let rNumber = generateRandomString();
-  urlDatabase[rNumber] = req.body.longURL;
-  console.log(urlDatabase);
-  res.redirect('/urls'); // redirect client to home home page
+  const shortUrl= generateRandomString();
+  const longUrl= req.body.longUrl;
+  console.log(req.body);
+  const userId = req.cookies["user_id"];
+  addNewURL(shortUrl, longUrl, userId);
+    res.redirect('/urls'); // redirect client to home home page
 });
 
 // Add a POST route that removes a URL resource from request: /urls/:id/delete
@@ -196,7 +209,7 @@ app.post("/urls/:id/delete", (req, res) => {
 // Add a POST route that update a URL resource: /urls/:id/update
 app.post("/urls/:id/update", (req, res) => {
 // Update database with req.body, in the new field  
-  urlDatabase[req.params.id] = req.body.longURL;
+  urlDatabase[req.params.id] = req.body.longUrl;
  });
 
 // Endpoint to handle a POST to /login

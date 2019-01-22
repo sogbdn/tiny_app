@@ -3,17 +3,17 @@
 
 <ul>
         <li>
-              <%= longURL  %>
-              <%= shortURL %>
+              <%= longUrl  %>
+              <%= shortUrl %>
               
-<form method="POST" action="/urls/<%= shortURL %>/update">
+<form method="POST" action="/urls/<%= shortUrl %>/update">
 
 <!--- Create a new field in order to put new longurl to update ---->
 <input 
-id="longURL" 
-value= " <%= longURL%> "
+id="longUrl" 
+value= " <%= longUrl%> "
 type="text" 
-name="longURL" 
+name="longUrl" 
 placeholder="http://" 
 style="width: 300px">
 </input>

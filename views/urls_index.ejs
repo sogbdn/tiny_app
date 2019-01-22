@@ -6,9 +6,10 @@
     <% if (user) { %>
      <ul>
         <% for (var urlKey in urls) { %>
+        
             <li>
               <%= urlKey  %>
-              <%= urls[urlKey] %>
+              <%= urls[urlKey].longUrl%>
                 <form method="POST" action="/urls/<%= urlKey %>/delete">
                     <a href='/urls/<%= urlKey  %>'> Edit </a>
                     <button type="submit"> Delete me!</button>
@@ -16,9 +17,13 @@
             </li>
         <% };%>
     </ul>
+    <a href='/urls/new'> Create new url </a>
     <% } else { %>
-    <a href= '/urls/new'> Create new url </a>
-    <% } %>    
+    <br>
+    <div> Please Login or Register. </div> 
+    <div> You must be logged in to view the list of URLs! <br><br>
+   </div>
+    <% };%>
 </body>
 
 </html>
