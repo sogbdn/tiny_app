@@ -223,11 +223,9 @@ app.post("/urls/:id/delete", (req, res) => {
 
 // Add a POST route that update a URL resource: /urls/:id/update
 app.post("/urls/:id/update", (req, res) => {
-  console.log('1', urlDatabase);
 
   // Update database with req.body, in the new field  
   urlDatabase[req.params.id].longUrl = req.body.longUrl;
-  console.log('2', urlDatabase);
   res.redirect('/urls');
 });
 
@@ -236,7 +234,7 @@ app.post("/login", (req, res) => {
   const userId = findUser(req.body.email);
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
   const compCryp = bcrypt.compareSync(req.body.password, hashedPassword);
-  console.log(compCryp);
+
   if (!userId) {
     res.status(403).send("Sorry, your Email is unknown, you have to register!");
   } else if (users[userId].password === req.body.password) {
