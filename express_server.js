@@ -1,16 +1,24 @@
 //_____________Use Express = FramWork to build web app_______________//
 const express = require("express");
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
-
+//const cookieParser = require('cookie-parser');
+var cookieSession = require('cookie-session');
+const bcrypt = require('bcrypt');
 //______________ express setup
 const PORT = 8080; //___________ default port 8080
 const app = express(); //_________My App is running with Express
 
-//______Middleware: body Parser to access POST request parameters
+//______Middleware: bodyParser to access POST request parameters
 //_______ (parsed entire body to JS object)
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+//app.use(cookieParser());
+//______________CookieSession___________________
+app.use(cookieSession({
+  name: 'session',
+  keys: ["key1", "key2"],
+}))
 //___________ Tells Express app to use EJS as its templating engine
 app.set("view engine", "ejs");
 
@@ -20,11 +28,11 @@ const urlDatabase = {
     shortUrl: "b2xVn2",
     longUrl: "http://www.lighthouselabs.ca",
     userId: "userRandomID"
-  },  
+  },
   "9sm5xK": {
-     shortUrl: "9sm5xK",
-     longUrl: "http://www.google.com",
-     userId: "user2RandomID"
+    shortUrl: "9sm5xK",
+    longUrl: "http://www.google.com",
+    userId: "user2RandomID"
   },
 };
 
@@ -42,7 +50,7 @@ const users = {
   }
 };
 
-//________Use UUID to generate random string____________________________//
+//________UUID to generate random string____________________________//
 const uuidv1 = require("uuid/v1");
 
 //_____ function that produces a string of 6 random alphanumeric characters:
@@ -64,37 +72,37 @@ const createUser = (email, password) => {
   return userId;
 };
 
- // Maybe later on I should change this function to check password as well
+// Maybe later on I should change this function to check password as well
 const findUser = email => {
   // loop through the existing user objects
   for (const userId in users) {
-  // if the email is the same then I got the right user
-  // Then return the userId
+    // if the email is the same then I got the right user
+    // Then return the userId
     if (users[userId].email === email) {
       return userId;
     }
   }
   return false;
-}; 
+};
 
 const emailExist = email => {
   for (const userId in users) {
     if (users[userId].email === email) {
       return userId;
-    }  
+    }
   }
   return false;
 };
- 
+
 function urlsForUsers(id) {
   const filteredUrls = {};
   for (const shortUrl in urlDatabase) {
     const urlObj = urlDatabase[shortUrl];
-      if (urlObj.userId === id) {
+    if (urlObj.userId === id) {
       // url belongs to that user
       // the urlObj needs to be part of the filteredUrls object
-      filteredUrls[shortUrl]= urlObj;
-      }
+      filteredUrls[shortUrl] = urlObj;
+    }
   }
   return filteredUrls;
 }
@@ -105,7 +113,6 @@ function addNewURL(shortUrl, longUrl, userId) {
     longUrl: longUrl,
     userId: userId
   };
-  console.log(urlDatabase);
 }
 
 // app.get to add a new route handler on the root path
@@ -127,21 +134,21 @@ app.get("/hello", (req, res) => {
 // Route order: most specific to less specific
 
 app.get("/urls", (req, res) => {
-  const userId = req.cookies["user_id"];
-  console.log(userId);
-
+  const userId = req.session["user_id"];
   const templateVars = {
     urls: urlsForUsers(userId),
-    user: users[req.cookies.user_id]
+    user: users[req.session.user_id]
   };
-  console.log(templateVars);
-    //passing user_id to each template so that it knows if the user logged in 
+  //passing user_id to each template so that it knows if the user logged in 
   res.render("urls_index", templateVars);
 });
 
 // Add GET route to show the form in the web page
 app.get("/urls/new", (req, res) => {
-  let templateVars = { urls: urlDatabase, user: users.user };
+  let templateVars = {
+    urls: urlDatabase,
+    user: users.user
+  };
   res.render('urls_new', templateVars);
 });
 
@@ -149,13 +156,14 @@ app.get("/urls/new", (req, res) => {
 // Display the register form
 
 app.get('/register', (req, res) => {
-  //res.cookie('user_id', userId);
   //res.redirect('/urls');  
   res.render('register');
 });
 
 app.get('/login', (req, res) => {
-  let templateVars = { user: users.user };
+  let templateVars = {
+    user: users.user
+  };
   res.render('login', templateVars);
 });
 
@@ -164,6 +172,7 @@ app.post('/register', (req, res) => {
   // Extract the info from form information; email and passport
   const email = req.body.email;
   const password = req.body.password;
+  const hashedPassword = bcrypt.hashSync(req.body.password, 10);
 
   // If the email or password are empty strings
   const email_password_empty = !email || !password;
@@ -171,33 +180,39 @@ app.post('/register', (req, res) => {
   // send back a response with the 400 status
   if (email_password_empty) {
     res.status(400).send('Please fill out all the required fields');
-  // If someone tries to register with an existing user's email
-  } else if (emailExist(email)) { 
+    // If someone tries to register with an existing user's email
+  } else if (emailExist(email)) {
     res.status(400).send('That email already exists. Please Login');
   } else {
-  // create a new user and add it to the global users
-  const userId = createUser(email, password); 
-  // set a cookie with the userId
-  res.cookie('user_id', userId);
-  // redirect to '/urls'
-  res.redirect('/urls');
+    // create a new user and add it to the global users
+    const userId = createUser(email, password);
+    // set a cookie with the userId
+    req.session.user_id = userId;
+
+    // redirect to '/urls'
+    res.redirect('/urls');
   }
 });
 
 // Endpoint Edit URL form
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { longUrl: urlDatabase[req.params.id], shortUrl: req.params.id, user: users.user};
+  let templateVars = {
+    longUrl: urlDatabase[req.params.id],
+    shortUrl: req.params.id,
+    // user: users.user
+    user: req.session["user_id"]
+  };
+
   res.render("urls_show", templateVars);
 });
 
 // logs the request body and gives a response parsed into a JS object
 app.post("/urls", (req, res) => {
-  const shortUrl= generateRandomString();
-  const longUrl= req.body.longUrl;
-  console.log(req.body);
-  const userId = req.cookies["user_id"];
+  const shortUrl = generateRandomString();
+  const longUrl = req.session["user_id"];
+  const userId = req.session["user_id"];
   addNewURL(shortUrl, longUrl, userId);
-    res.redirect('/urls'); // redirect client to home home page
+  res.redirect('/urls'); // redirect client to home home page
 });
 
 // Add a POST route that removes a URL resource from request: /urls/:id/delete
@@ -208,28 +223,33 @@ app.post("/urls/:id/delete", (req, res) => {
 
 // Add a POST route that update a URL resource: /urls/:id/update
 app.post("/urls/:id/update", (req, res) => {
-// Update database with req.body, in the new field  
-  urlDatabase[req.params.id] = req.body.longUrl;
- });
+  console.log('1', urlDatabase);
+
+  // Update database with req.body, in the new field  
+  urlDatabase[req.params.id].longUrl = req.body.longUrl;
+  console.log('2', urlDatabase);
+  res.redirect('/urls');
+});
 
 // Endpoint to handle a POST to /login
 app.post("/login", (req, res) => {
   const userId = findUser(req.body.email);
-  console.log(userId, req.body.email);
-    if (!userId) {
+  const hashedPassword = bcrypt.hashSync(req.body.password, 10);
+  const compCryp = bcrypt.compareSync(req.body.password, hashedPassword);
+  console.log(compCryp);
+  if (!userId) {
     res.status(403).send("Sorry, your Email is unknown, you have to register!");
-  } 
-  else if ( users[userId].password === req.body.password) {
-    res.cookie("user_id", userId);
+  } else if (users[userId].password === req.body.password) {
+    req.session["user_id"] = userId;
     res.redirect('/urls');
   } else {
-      res.status(403).send("Email and password don't match!");
-    }
+    res.status(403).send("Email and password don't match!");
+  }
 });
 
 // Implement the /logout endpoint so that it clears the user_id cookie and redirects /urls page
 app.post("/logout", (req, res) => {
-  res.clearCookie('user_id');
+  req.session["user_id"] = null;
   res.redirect('/urls'); // redirect client to home page
 });
 
