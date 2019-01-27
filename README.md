@@ -2,7 +2,7 @@
 
 Tiny App is the fullstack web application built with node and express that allows users to shorten long URLs (a la bit.ly).
 
-##Final Product
+## Final Product
 
 ![Home page of my project] (https://github.com/sogbdn/tiny_app/blob/master/docs/urls.png?raw=true)
 ![Register page of my project] (https://github.com/sogbdn/tiny_app/blob/master/docs/register.png?raw=true)
