@@ -4,34 +4,37 @@
 <head>
     <title>TinyApp</title>
 </head>
-<body>  
-<header>
 
-    <h1> TinyApp </h1>
-    <!--If the user object exists display Welcome email and logout button--->
-    <% if (user) { %>
-    <div> Welcome <%= user.email %> </div>
-    <div>
-        <form method="POST" action="/logout">
-            <input type="submit" value="Logout">
-        </form>
-    </div>
-    <!--If user is undefined, ask for email et password--->
-    <% } else { %>
-    <div> Enter your email and password </div>
-        <div>
-        <form method="POST" action="/login" style="margin:150px;">
-            <label for="Email"> Email</label>
-            <input id="Email" type="text" name="email" placeholder="" style="width: 300px">
-            </input type="submit" value="Submit">
-            <br> 
-            <br>   
-            <label for="Password"> Password </label>
-            <input id="password---" type="text" name="password" placeholder="" style="width: 300px">
-            </input type="submit" value="Submit">
-            <button type="submit"> Submit </button>
-        </form>
+<body>
+    <header>
+
+        <h1> TinyApp </h1>
+        <!--If the user object exists display Welcome email and logout button--->
+        <% if (user) { %>
+        <div> Welcome
+            <%= user.email %>
         </div>
-    <% } %>
-</header>
+        <div>
+            <form method="POST" action="/logout">
+                <input type="submit" value="Logout">
+            </form>
+        </div>
+        <!--If user is undefined, ask for email et password--->
+        <% } else { %>
+        <div> Enter your email and password </div>
+        <div>
+            <form method="POST" action="/login" style="margin:150px;">
+                <label for="Email"> Email</label>
+                <input id="Email" type="text" name="email" placeholder="" style="width: 300px">
+                </input type="submit" value="Submit">
+                <br>
+                <br>
+                <label for="Password"> Password </label>
+                <input id="password---" type="password" name="password" placeholder="" style="width: 300px">
+                </input type="submit" value="Submit">
+                <button type="submit"> Submit </button>
+            </form>
+        </div>
+        <% } %>
+    </header>
 </body>
