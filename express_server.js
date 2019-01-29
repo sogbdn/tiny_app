@@ -205,29 +205,21 @@ app.post("/register", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   if (!req.session.user_id) {
     res.redirect("/login");
+  } else {
+    let templateVars = {
+      longUrl: urlDatabase[req.params.id],
+      shortUrl: req.params.id,
+      user: req.session["user_id"]
+    };
+    res.render("urls_show", templateVars);
   }
-  let templateVars = {
-    longUrl: urlDatabase[req.params.id],
-    shortUrl: req.params.id,
-    //user: users.user
-    user: req.session["user_id"]
-  };
-  res.render("urls_show", templateVars);
 });
-
 
 // Endpoint Edit URL form
 app.get("/u/:id", (req, res) => {
-  if (!req.session.user_id) {
-    res.redirect("/login");
-  }
-  let templateVars = {
-    longUrl: urlDatabase[req.params.id],
-    shortUrl: req.params.id,
-    //user: users.user
-    user: req.session["user_id"]
-  };
-  res.render("urls_show", templateVars);
+  // let longURL
+  let longUrl = urlDatabase[req.params.id].longUrl;
+  res.redirect(longUrl);
 });
 
 // logs the request body and gives a response parsed into a JS object
@@ -241,14 +233,18 @@ app.post("/urls", (req, res) => {
 
 // Add a POST route that removes a URL resource from request: /urls/:id/delete
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase[req.params.id];
+  if (req.session["user_id"] === urlDatabase[req.param.id].userId) {
+    delete urlDatabase[req.params.id];
+  }
   res.redirect("/urls"); // redirect client to home page
 });
 
 // Add a POST route that update a URL resource: /urls/:id/update
 app.post("/urls/:id/update", (req, res) => {
   // Update database with req.body, in the new field
-  urlDatabase[req.params.id].longUrl = req.body.longUrl;
+  if (req.session["user_id"] === urlDatabase[req.param.id].userId) {
+    urlDatabase[req.params.id].longUrl = req.body.longUrl;
+  }
   res.redirect("/urls");
 });
 

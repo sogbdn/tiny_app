@@ -3,25 +3,25 @@
 <% include ./partials/_header.ejs  %>
 
 <body>
-    <% if (user) { %>
-    <ul>
-        <% for (var urlKey in urls) { %>
+	<% if (user) { %>
+	<ul>
+		<% for (var urlKey in urls) { %>
 
-        <li>
-            <%= urlKey  %>
-            <%= urls[urlKey].longUrl%>
-            <form method="POST" action="/urls/<%= urlKey %>/delete">
-                <a href='/urls/<%= urlKey  %>'> Edit </a>
-                <button type="submit"> Delete me!</button>
-            </form>
-        </li>
-        <% };%>
-    </ul>
-    <a href='/urls/new'> Create new url </a>
-    <% } else { %> <br>
-    <div> Please Login or Register. </div>
-    <div> You must be logged in to view the list of URLs! <br><br></div>
-    <% };%>
+		<li>
+			<%= urlKey  %>
+			<%= urls[urlKey].longUrl%>
+			<form method="POST" action="/urls/<%= urlKey %>/delete">
+				<a href='/urls/<%= urlKey  %>'> Edit </a>
+				<button type="submit"> Delete me!</button>
+			</form>
+		</li>
+		<% };%>
+	</ul>
+	<a href='/urls/new'> Create new url </a>
+	<% } else { %> <br>
+	<div> Please Login or Register. </div>
+	<div> You must be logged in to view the list of URLs! <br><br></div>
+	<% };%>
 </body>
 
 </html>

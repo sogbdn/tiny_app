@@ -1,18 +1,17 @@
 <% include ./partials/_header.ejs  %>
 
 <ul>
-        <li>
-                <%= longUrl.longUrl %>
-                <%= shortUrl %>
+	<li>
+		<%= longUrl.longUrl %>
+		<%= shortUrl %>
 
-                <form method="POST" action="/urls/<%= shortUrl %>/update">
+		<form method="POST" action="/urls/<%= shortUrl %>/update">
 
-                        <!--- Create a new field in order to put new longurl to update ---->
-                        <input id="longUrl" value=" <%= longUrl.longUrl %> " type="text" name="longUrl" placeholder="http://"
-                                style="width: 300px">
-                        </input>
+			<!--- Create a new field in order to put new longurl to update ---->
+			<input id="longUrl" value=" <%= longUrl.longUrl %> " type="text" name="longUrl" placeholder="http://" style="width: 300px">
+			</input>
 
-                        <button type="submit"> Update me!</button>
-                </form>
-        </li>
+			<button type="submit"> Update me!</button>
+		</form>
+	</li>
 </ul>

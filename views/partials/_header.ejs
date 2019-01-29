@@ -1,32 +1,19 @@
 <% /* Header partial */%>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>TinyApp</title>
-</head>
+<header>
+  <h1>TinyApp</h1>
 
-<body>
- <header>
-
-<h1> TinyApp </h1>
-
-<!-- If the user object exists display Welcome email and logout button--->
-<% if (user) { %>
-<div> Welcome <%= user.email %> </div>
-<div>
-  <form method="POST" action="/logout">
-    <input type="submit" value="Logout">
-  </form>
-</div>
-<!-- If user is undefined, display the login and register link---->
-<% } else { %>
-  <div class="login"><a href="/login"> Login </a>
+  <!-- If the user object exists display Welcome email and logout button--->
+  <% if (user) { %>
+  <div>Welcome <%= user.email %></div>
+  <div>
+    <form method="POST" action="/logout">
+      <input type="submit" value="Logout" />
+    </form>
   </div>
-  <div class="register"><a href="/register"> Register </a>
-  </div>
-<% } %>
-
-  </header>
-</body>
-
+  <!-- If user is undefined, display the login and register link---->
+  <% } else { %>
+  <div class="login"><a href="/login"> Login </a></div>
+  <div class="register"><a href="/register"> Register </a></div>
+  <% } %>
+</header>
