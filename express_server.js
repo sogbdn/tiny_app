@@ -56,7 +56,7 @@ const users = {
 };
 
 // Function that produces a string of 6 random alphanumeric characters:
-function generateRandomString() {
+function generateRandomString () {
   return uuidv1().substr(0, 6);
 }
 // Create a new user and add it to the users db and return the userId
@@ -95,7 +95,7 @@ const emailExist = email => {
   return false;
 };
 
-function urlsForUsers(id) {
+function urlsForUsers (id) {
   const filteredUrls = {};
   for (const shortUrl in urlDatabase) {
     const urlObj = urlDatabase[shortUrl];
@@ -108,7 +108,7 @@ function urlsForUsers(id) {
   return filteredUrls;
 }
 
-function addNewURL(shortUrl, longUrl, userId) {
+function addNewURL (shortUrl, longUrl, userId) {
   urlDatabase[shortUrl] = {
     shortUrl: shortUrl,
     longUrl: longUrl,
@@ -158,7 +158,6 @@ app.get("/urls/new", (req, res) => {
     urls: urlDatabase,
     user: users[req.session.user_id]
   };
-  // console.log(user);
   res.render("urls_new", templateVars);
 });
 
@@ -196,7 +195,6 @@ app.post("/register", (req, res) => {
     const userId = createUser(email, password);
     // set a cookie with the userId
     req.session.user_id = userId;
-    // redirect to '/urls'
     res.redirect("/urls");
   }
 });
@@ -217,7 +215,6 @@ app.get("/urls/:id", (req, res) => {
 
 // Endpoint Edit URL form
 app.get("/u/:id", (req, res) => {
-  // let longURL
   let longUrl = urlDatabase[req.params.id].longUrl;
   res.redirect(longUrl);
 });
@@ -231,24 +228,24 @@ app.post("/urls", (req, res) => {
   res.redirect("/urls"); // redirect client to home home page
 });
 
-// Add a POST route that removes a URL resource from request: /urls/:id/delete
+// POST route that removes a URL resource from request: /urls/:id/delete
 app.post("/urls/:id/delete", (req, res) => {
-  if (req.session["user_id"] === urlDatabase[req.param.id].userId) {
+  if (req.session["user_id"] === urlDatabase[req.params.id].userId) {
     delete urlDatabase[req.params.id];
   }
   res.redirect("/urls"); // redirect client to home page
 });
 
-// Add a POST route that update a URL resource: /urls/:id/update
+// POST route that update a URL resource: /urls/:id/update
 app.post("/urls/:id/update", (req, res) => {
   // Update database with req.body, in the new field
-  if (req.session["user_id"] === urlDatabase[req.param.id].userId) {
+  if (req.session["user_id"] === urlDatabase[req.params.id].userId) {
     urlDatabase[req.params.id].longUrl = req.body.longUrl;
   }
   res.redirect("/urls");
 });
 
-// Endpoint to handle a POST to /login
+// POST to /login
 app.post("/login", (req, res) => {
   const userId = findUser(req.body.email);
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
@@ -264,7 +261,7 @@ app.post("/login", (req, res) => {
   }
 });
 
-// Implement the /logout endpoint so that it clears the user_id cookie and redirects /urls page
+// POST to /logout so that it clears the user_id cookie and redirects /urls page
 app.post("/logout", (req, res) => {
   req.session["user_id"] = null;
   res.redirect("/"); // redirect client to home page
